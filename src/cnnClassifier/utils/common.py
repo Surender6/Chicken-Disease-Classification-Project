@@ -11,32 +11,29 @@ from typing import Any
 import base64
 import yaml 
 
-
-
-@ensure_annotations
 def read_yaml(path_to_yaml: Path) -> ConfigBox:
-    """
-    Reads a YAML file and converts its content to a ConfigBox.
-    Handles empty or invalid YAML files gracefully.
+    """reads yaml file and returns
+
+    Args:
+        path_to_yaml (str): path like input
+
+    Raises:
+        ValueError: if yaml file is empty
+        e: empty file
+
+    Returns:
+        ConfigBox: ConfigBox type 
     """
     try:
-        with open(path_to_yaml, "r") as yaml_file:
+        with open(path_to_yaml) as yaml_file:
             content = yaml.safe_load(yaml_file)
-            if not content:  # Check if content is None or empty
-                logger.error(f"YAML file {path_to_yaml} is empty or invalid.")
-                raise ValueError(f"YAML file {path_to_yaml} is empty or invalid.")
-            logger.info(f"YAML file {path_to_yaml} loaded successfully.")
+            logger.info(f"yaml file: {path_to_yaml} loaded successfully")
             return ConfigBox(content)
-    except BoxValueError as e:
-        logger.error(f"Failed to parse YAML content into ConfigBox: {e}")
-        raise ValueError(f"YAML file {path_to_yaml} contains invalid structure.") from e
-    except FileNotFoundError as e:
-        logger.error(f"YAML file {path_to_yaml} not found: {e}")
-        raise FileNotFoundError(f"YAML file {path_to_yaml} not found.") from e
+    except BoxValueError:
+        raise ValueError("yaml file is empty")
     except Exception as e:
-        logger.error(f"An error occurred while reading YAML file {path_to_yaml}: {e}")
         raise e
-    
+
 @ensure_annotations
 def create_directories(path_to_directories: list, verbose=True):
     """create list of directories
@@ -53,7 +50,8 @@ def create_directories(path_to_directories: list, verbose=True):
 
 @ensure_annotations
 def save_json(path: Path, data: dict):
-    """save json data
+    """ 
+    save json data
 
     Args:
         path (Path): path to json file
