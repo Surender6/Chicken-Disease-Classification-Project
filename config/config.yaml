@@ -20,6 +20,11 @@ prepare_callbacks:
 
 
 
+training:
+  root_dir: artifacts/training
+  train_data_path: artifacts/training/model.h5
+
+
 
 
 
