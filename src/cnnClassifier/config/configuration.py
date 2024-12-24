@@ -1,7 +1,9 @@
 from cnnClassifier.constants import *
 import os
+from pathlib import Path
 from cnnClassifier.utils.common import read_yaml,create_directories
-from cnnClassifier.entity.config_entity import (DataIngestionConfig,PrepareBaseModelConfig,PrepareCallbacksConfig,TrainingConfig)
+from cnnClassifier.entity.config_entity import (DataIngestionConfig,PrepareBaseModelConfig,PrepareCallbacksConfig,TrainingConfig, EvaluationConfig)
+
 
 class ConfigurationManager:
     def __init__(
@@ -30,6 +32,9 @@ class ConfigurationManager:
         )
 
         return data_ingestion_config 
+    
+    
+    
     def get_prepare_base_model_config(self) -> PrepareBaseModelConfig:
         config =self.config.prepare_base_model
         
@@ -46,6 +51,9 @@ class ConfigurationManager:
             params_classes = self.params.CLASSES 
         ) 
         return prepare_base_model_config 
+    
+    
+    
     def get_prepare_callback_config(self) -> PrepareCallbacksConfig:
         config = self.config.prepare_callbacks
         model_ckpt_dir = os.path.dirname(config.checkpoint_model_filepath)
@@ -61,6 +69,8 @@ class ConfigurationManager:
         )
 
         return prepare_callback_config
+    
+    
     
     def get_training_config(self) -> TrainingConfig:
         training = self.config.training
@@ -80,3 +90,15 @@ class ConfigurationManager:
             params_image_size = params.IMAGE_SIZE
         ) 
         return training_config
+    
+    
+    
+    def get_validation_config(self) -> EvaluationConfig:
+        eval_config =EvaluationConfig(
+            path_of_model=Path("artifacts/training/model.h5"),
+            training_data =Path("artifacts/data_ingestion/Chicken-fecal-images"),
+            all_params = self.params,
+            params_image_size = self.params.IMAGE_SIZE,
+            params_batch_size = self.params.BATCH_SIZE,
+        )
+        return eval_config
